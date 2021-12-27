@@ -6,11 +6,10 @@ contract Voting{
   address admin;
     // define candicated to be voted in a struct
   struct Candidate {
-      bytes32 name;
+      string name;
       uint32 votes;
-      bool exists;
   }
-
+  uint32 length;
 //   Store my candidates in a map
   Candidate[] candidates;
 //   Save my voters in a seperate mapping
@@ -32,20 +31,21 @@ contract Voting{
       admin = msg.sender;
   }
 
-  function addCandidate(bytes32 _name) external onlyAdmin(){
+  function addCandidate(string calldata _name) external onlyAdmin(){
     //   Create a new Struct for the candidate
-    Candidate memory _newCandidate = Candidate(_name, 0, true);
+    Candidate memory _candidate = Candidate(_name, 0);
     // Push candidate to the array of candidates
-    candidates.push(_newCandidate);
+    candidates.push(_candidate);
+    length++;
   }
 
   function vote(uint32 _candidate) external payable {
     //   Grab the address of the voter
       address _voter = msg.sender;
     //   Check if voter has voted before
-      require(voters[_voter], "CAN'T_VOTE_MORE_THAN_ONCE");
+      require(!voters[_voter], "CAN'T_VOTE_MORE_THAN_ONCE");
     //   Check if the voter is voting a valid candidate
-      require(candidates[_candidate].exists, "CANDIDATE_TO_BE_VOTED_EXISTS");
+      require(_candidate >=0 && _candidate <= length, "CANDIDATE_DOES_NOT_EXIST");
     
     // Increment vote for the candidate
       candidates[_candidate].votes++;
@@ -53,5 +53,14 @@ contract Voting{
       voters[_voter] = true;
     //   Emit an event to front end
       emit Voted(_voter, _candidate);
+  }
+
+  function getVoters(address _voter) external view returns(bool){
+      require(!voters[_voter], "VOTER_NOT_FOUND");
+      return(voters[_voter]);
+  }
+
+  function getCandidate(uint32 _candidate) external view returns(Candidate memory){
+      return(candidates[_candidate]);
   }
 }
