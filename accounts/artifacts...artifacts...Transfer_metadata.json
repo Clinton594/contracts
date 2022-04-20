@@ -1,0 +1,84 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "deposit",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "_receiver",
+						"type": "address"
+					}
+				],
+				"name": "rugPull",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "_receiver",
+						"type": "address"
+					}
+				],
+				"name": "send",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"artifacts/Transfer.sol": "Transfer"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"artifacts/Transfer.sol": {
+			"keccak256": "0x8a9ed38b294957c0660180064121daa42df1b842193187a04e9c9a409ff42b09",
+			"license": "UNLICENSED",
+			"urls": [
+				"bzz-raw://b1c0c2b7ff7e2c32e4cdf816ba91f510d406db8b30a85f9186c81c8a49032ae7",
+				"dweb:/ipfs/QmPuzmC79vUR4XhiJ3iJXLSgYZvAgDgbM5PYkJ4icvCoPT"
+			]
+		}
+	},
+	"version": 1
+}
