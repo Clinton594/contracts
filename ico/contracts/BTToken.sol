@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.12;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "../node_modules/@openzeppelin/contracts/GSN/Context.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 
-contract BTToken is Context, ERC20, ERC20Detailed {
+contract BTToken is Context, ERC20 {
     constructor(
         string memory name, //Name of the token
         string memory symbol, //Token symbol
         uint256 initailSupply
-    ) ERC20Detailed(name, symbol, 18) {
+    ) ERC20(name, symbol) {
         _mint(_msgSender(), initailSupply);
     }
 }

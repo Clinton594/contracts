@@ -916,9 +916,9 @@
   "devDependencies": {
     "mocha": "^8.1.2"
   },
-      "browser": {
-      "crypto": false
-    },
+  "browser": {
+    "crypto": false
+  },
   "scripts": {
     "test": "mocha"
   },

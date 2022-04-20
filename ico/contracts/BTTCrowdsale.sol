@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.12;
 
-import "../node_modules/@openzeppelin/contracts/crowdsale/Crowdsale.sol";
+import "./Crowdsale.sol";
 
 contract BTTCrowdsale is Crowdsale {
     constructor(
