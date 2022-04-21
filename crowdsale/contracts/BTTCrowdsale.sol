@@ -10,3 +10,13 @@ contract BTTCrowdsale is Crowdsale {
         IERC20 token //
     ) Crowdsale(rate, wallet, token) {}
 }
+
+// Deposit into the Presalse contract
+
+// Withdraw from the Presalse contract
+
+// Lock Presalse
+
+// Change Presale duration
+
+//

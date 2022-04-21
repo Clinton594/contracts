@@ -2,6 +2,8 @@ const BTToken = artifacts.require("BTToken");
 const BTTCrowdsale = artifacts.require("BTTCrowdsale");
 
 module.exports = async (deployer, network, accounts) => {
+  // console.log(`Deployment Network: ${network}`);
+
   await deployer.deploy(BTToken, "BrainTemple", "BTT", "1000000000000000000");
   const token = await BTToken.deployed();
 
