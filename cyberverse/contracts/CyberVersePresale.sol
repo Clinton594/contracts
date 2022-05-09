@@ -1,13 +1,11 @@
 /**
  *Submitted for verification at BscScan.com on 2022-03-21
-*/
+ */
 
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.5;
 
-
 library SafeMath {
-
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
         require(c >= a, "SafeMath: addition overflow");
@@ -33,18 +31,19 @@ library SafeMath {
 }
 
 abstract contract Context {
-
     function _msgSender() internal view virtual returns (address payable) {
         return msg.sender;
     }
 }
 
 abstract contract Ownable is Context {
-
     address private _owner;
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
-    constructor () {
+    constructor() {
         address msgSender = _msgSender();
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -65,28 +64,48 @@ abstract contract Ownable is Context {
     }
 
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
 }
 
 interface IERC20 {
-
     function totalSupply() external view returns (uint256);
+
     function decimals() external view returns (uint8);
+
     function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
+
+    function transfer(address recipient, uint256 amount)
+        external
+        returns (bool);
+
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
+
     function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
 contract CyberVersePreSale is Ownable {
-
     using SafeMath for uint256;
 
     IERC20 public CBV = IERC20(0x7D981e8d39E5B613d04B42C4dd48e03Ec25919A3);
@@ -107,9 +126,9 @@ contract CyberVersePreSale is Ownable {
     mapping(address => uint256) public usersInvestments;
 
     constructor(uint256 _startTime, uint256 _endTime) {
-        require(_startTime > block.timestamp, 'past timestamp');
+        require(_startTime > block.timestamp, "past timestamp");
         startTime = _startTime;
-        if(_endTime > _startTime + 7 days) {
+        if (_endTime > _startTime + 7 days) {
             endTime = _endTime;
         } else {
             endTime = _startTime + 30 days;
@@ -122,7 +141,7 @@ contract CyberVersePreSale is Ownable {
     }
 
     function setPresaleToken(address tokenaddress) external onlyOwner {
-        require( tokenaddress != address(0) );
+        require(tokenaddress != address(0));
         CBV = IERC20(tokenaddress);
     }
 
@@ -135,63 +154,79 @@ contract CyberVersePreSale is Ownable {
     }
 
     function setMinEthLimit(uint256 amount) external onlyOwner {
-        minETHLimit = amount;    
+        minETHLimit = amount;
     }
 
     function setMaxEthLimit(uint256 amount) external onlyOwner {
-        maxETHLimit = amount;    
+        maxETHLimit = amount;
     }
 
     function setStartTime(uint256 _startTime) external onlyOwner {
-        require(_startTime > block.timestamp, 'past timestamp');
+        require(_startTime > block.timestamp, "past timestamp");
         startTime = _startTime;
     }
 
     function setEndTime(uint256 _endTime) external onlyOwner {
-        require(_endTime > startTime + 15 days, 'too short period');
+        require(_endTime > startTime + 15 days, "too short period");
         endTime = _endTime;
     }
 
-    function togglePause() external onlyOwner returns (bool){
+    function togglePause() external onlyOwner returns (bool) {
         contractPaused = !contractPaused;
         return contractPaused;
     }
 
-    receive() external payable{
+    receive() external payable {
         deposit();
     }
 
     function deposit() public payable checkIfPaused {
-        require(block.timestamp > startTime, 'Sale has not started');
-        require(block.timestamp < endTime, 'Sale has ended');
-        require(totalRaisedBNB <= hardCap, 'HardCap exceeded');
+        require(block.timestamp > startTime, "Sale has not started");
+        require(block.timestamp < endTime, "Sale has ended");
+        require(totalRaisedBNB <= hardCap, "HardCap exceeded");
         require(
-                usersInvestments[msg.sender].add(msg.value) <= maxETHLimit
-                && usersInvestments[msg.sender].add(msg.value) >= minETHLimit,
-                "Installment Invalid."
+            usersInvestments[msg.sender].add(msg.value) <= maxETHLimit &&
+                usersInvestments[msg.sender].add(msg.value) >= minETHLimit,
+            "Installment Invalid."
         );
-        
+
         uint256 tokenAmount = getTokensPerEth(msg.value);
-        require(CBV.transfer(msg.sender, tokenAmount), "Insufficient balance of presale contract!");
+        require(
+            CBV.transfer(msg.sender, tokenAmount),
+            "Insufficient balance of presale contract!"
+        );
 
         totalRaisedBNB = totalRaisedBNB.add(msg.value);
         totaltokenSold = totaltokenSold.add(tokenAmount);
-        usersInvestments[msg.sender] = usersInvestments[msg.sender].add(msg.value);
+        usersInvestments[msg.sender] = usersInvestments[msg.sender].add(
+            msg.value
+        );
 
         payable(Recipient).transfer(msg.value);
     }
 
     function getUnsoldTokens(address token, address to) external onlyOwner {
-        require(block.timestamp > endTime + 7 days, "You cannot get tokens until the presale is closed.");
-        IERC20(token).transfer(to, IERC20(token).balanceOf(address(this)) );
+        require(
+            block.timestamp > endTime + 7 days,
+            "You cannot get tokens until the presale is closed."
+        );
+        IERC20(token).transfer(to, IERC20(token).balanceOf(address(this)));
+
         payable(to).transfer(address(this).balance);
     }
 
-    function getUserRemainingAllocation(address account) external view returns ( uint256 ) {
+    function getUserRemainingAllocation(address account)
+        external
+        view
+        returns (uint256)
+    {
         return maxETHLimit.sub(usersInvestments[account]);
     }
 
-    function getTokensPerEth(uint256 amount) internal view returns(uint256) {
-        return amount.mul(tokenRatePerEth).div(10**(uint256(18).sub(CBV.decimals())));
+    function getTokensPerEth(uint256 amount) internal view returns (uint256) {
+        return
+            amount.mul(tokenRatePerEth).div(
+                10**(uint256(18).sub(CBV.decimals()))
+            );
     }
 }
